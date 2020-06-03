@@ -1,0 +1,32 @@
+## Create a POd of K8s running in K8s cluster and connect the database remotely
+
+kubectl create secret generic dbinfo --from-literal p=k8slove
+kubectl get secrets
+kubectl create deployment k8s --image=mysql --dry-run -o yaml >dbdep1.yml
+vim dbdep1.yml
+kubectl create -f dbdep1.yml 
+kubectl get deployment
+kubectl get po
+kubectl expose pods k8s-7dcc764fc4-hwq8m --type NodePort
+kubectl port-forward k8s-7dcc764fc4-hwq8m  7000:3306
+sudo mysql -u root -pk8slove -h localhost  -P 3306
+MariaDB [(none)]> USE k8s
+CREATE TABLE IF NOT EXISTS equipment (
+id int(5) NOT NULL AUTO_INCREMENT,
+NAME VARCHAR(50) NOT NULL,
+ipaddress VARCHAR(20),
+PRIMARY KEY(id));
+INSERT INTO equipment (NAME, ipaddress) VALUES("Shreya", "147.21.20.11");
+INSERT INTO equipment (NAME, ipaddress) VALUES("Ashutoshh", "197.0.0.12");
+INSERT INTO equipment (NAME, ipaddress) VALUES("Akash", "197.0.0.52");
+SELECT * FROM equipment;
++----+-----------+--------------+                                                                                                                            
+| id | NAME      | ipaddress    |                                                                                                                            
++----+-----------+--------------+                                                                                                                            
+|  1 | Shreya    | 147.21.20.11 |                                                                                                                                                           
+|  2 | Ashutoshh | 197.0.0.12   |                                                                                                                                                           
+|  3 | Akash     | 197.0.0.52   |                                                                                                                                                           
++----+-----------+--------------+                                                                                                                                                           
+3 rows in set (0.000 sec)
+
+
